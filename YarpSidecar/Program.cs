@@ -1,4 +1,7 @@
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration.AddJsonFile("/config/appsettings.json", true);
+
 builder.Services
     .AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
