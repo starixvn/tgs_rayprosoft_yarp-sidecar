@@ -9,6 +9,22 @@ pipeline {
 	}
 
 	stages {
+		stage('Prepare') {
+            steps {
+                sh "echo 'Branch: $GIT_BRANCH'";
+                script {
+                    env.TAG = sh(script: "echo `date +%Y.%m.%d.%H%M`", returnStdout: true).trim()
+					message += "\nBranch: ${env.GIT_BRANCH}" 
+					message += "\nTag: ${env.TAG}"
+					message += "\nEnv: ${env.kube_ns}"
+					env.commit_url = "${env.GIT_URL}".replace("git@gitlab.com:","https://gitlab.com/")
+                            .replace(".git","/-/commit/") + "${env.GIT_COMMIT}"
+					message += "\n Commit: ${env.commit_url}"
+                }
+                sh "echo tag: $TAG"
+            }
+        }
+
 		stage('Build') {
 			steps {
 				sh 'dotnet build -c $BuildConfiguration'
